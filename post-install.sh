@@ -130,8 +130,13 @@ echo "Adding VM config to system"
 sleep 1
 
 cp windows11-main.xml /etc/libvirt/qemu/ -v
+
 virsh define /etc/libvirt/qemu/windows11-main
 
+mkdir /usr/share/vgabios
 
-# Notify user to reboot the computer
+cp GP107_Updated.rom /usr/share/vgabios -v
+
+
+##### Notify user to reboot the computer #####
 echo "Please reboot this machine"
