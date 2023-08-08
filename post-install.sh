@@ -162,5 +162,12 @@ mkdir /usr/share/vgabios
 cp GP107.rom /usr/share/vgabios -v
 
 
+##### Configure bridge networking #####
+nmcli conn add type bridge con-name br0 ifname br0
+nmcli conn add type ethernet slave-type bridge con-name bridge-br0 ifname eno1 master br0
+nmcli conn up br0
+nmcli conn down "Wired connection 1"
+
+
 ##### Notify user to reboot the computer #####
 echo "Please reboot this machine"
