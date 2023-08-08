@@ -154,12 +154,12 @@ echo "Adding VM config to system"
 sleep 1
 
 cp windows11-main.xml /etc/libvirt/qemu/ -v
-
 virsh define /etc/libvirt/qemu/windows11-main
 
-mkdir /usr/share/vgabios
 
-cp GP107_Updated.rom /usr/share/vgabios -v
+##### Adding GPU ROM File #####
+mkdir /usr/share/vgabios
+cp GP107.rom /usr/share/vgabios -v
 
 
 ##### Notify user to reboot the computer #####
