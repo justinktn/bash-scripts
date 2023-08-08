@@ -133,5 +133,5 @@ cp windows11-main.xml /etc/libvirt/qemu/ -v
 virsh define /etc/libvirt/qemu/windows11-main
 
 
-##### Asking user to reboot #####
+# Notify user to reboot the computer
 echo "Please reboot this machine"
