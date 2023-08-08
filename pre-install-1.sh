@@ -1,5 +1,4 @@
 #!/bin/bash
-set x
 
 # Update the system to the latest version that is currently available
 dnf update -y

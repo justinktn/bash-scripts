@@ -1,28 +1,51 @@
 #!/bin/bash
-set -x
+
+##### Install necessary virtualization packages #####
+echo "Installing virtualization packages"
+sleep 1
+
+dnf update
+
+dnf install @virtualization -y
+
 
 ##### Configuring GRUB #####
 echo "Adding necessary GRUB parameters"
 sleep 1
 
-# GRUB parameters to add
-grub_params="intel_iommu=on iommu=pt"
+cp /etc/default/grub new_grub
 
-# Get the current GRUB configuration
-current_config=$(grep "^GRUB_CMDLINE_LINUX=" /etc/default/grub)
+# Detecting CPU
+CPU=$(lscpu | grep GenuineIntel | rev | cut -d ' ' -f 1 | rev )
 
-# Check if the parameters are already present
-if [[ $current_config == *"$grub_params"* ]]; then
-    echo "Parameters already present in GRUB config. No changes needed."
-else
-    # Add the new parameters to the existing GRUB configuration
-    grub_config="${current_config%\"} ${grub_params}\""
-    sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"$new_config|" /etc/default/grub
+INTEL="0"
 
-    # Update GRUB
-    grub2-mkconfig -o /boot/grub2/grub.cfg
-    echo "Parameters added to GRUB config. GRUB updated."
+if [ "$CPU" = "GenuineIntel" ]
+	then
+	INTEL="1"
 fi
+
+# Building string intel_iommu=on or amd_iommu=on
+if [ $INTEL = 1 ]
+	then
+	IOMMU="intel_iommu=on iommu=pt"
+	echo "Set Intel IOMMU On"
+	else
+	IOMMU="amd_iommu=on iommu=pt"
+	echo "Set AMD IOMMU On"
+fi
+
+# Putting together new grub string
+OLD_OPTIONS=`cat new_grub | grep GRUB_CMDLINE_LINUX | cut -d '"' -f 1,2`
+
+NEW_OPTIONS="$OLD_OPTIONS $IOMMU\""
+echo $NEW_OPTIONS
+
+# Rebuilding grub
+sed -i -e "s|^GRUB_CMDLINE_LINUX.*|${NEW_OPTIONS}|" new_grub
+
+mv new_grub /etc/default/grub
+grub2-mkconfig -o /boot/grub2/grub.cfg
 
 
 ##### Installing Libvirt automation #####
