@@ -5,8 +5,9 @@ echo "Installing virtualization packages"
 sleep 1
 
 dnf update
-
 dnf install @virtualization -y
+systemctl enable libvirtd --now
+usermod -aG libvirt $USER
 
 
 ##### Configuring GRUB #####
@@ -29,10 +30,10 @@ fi
 if [ $INTEL = 1 ]
 	then
 	IOMMU="intel_iommu=on iommu=pt"
-	echo "Set Intel IOMMU On"
+	echo "Set intel_iommu=on"
 	else
 	IOMMU="amd_iommu=on iommu=pt"
-	echo "Set AMD IOMMU On"
+	echo "Set amd_iommu=on"
 fi
 
 # Putting together new grub string
