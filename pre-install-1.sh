@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Allow 10 packages to be downloaded in parallel
+cat << EOF >> /etc/dnf/dnf.conf
+max_parallel_downloads=10
+EOF
+
 # Update the system to the latest version that is currently available
 dnf update -y
 
